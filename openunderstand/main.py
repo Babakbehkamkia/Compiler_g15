@@ -208,13 +208,15 @@ if __name__ == '__main__':
     ########## AGE KHASTID YEK FILE RO RUN KONID:
     # files = ["../../Java codes/javaCoupling.java"]
 
-    for file_address in files:
-        try:
-            file_ent = p.getFileEntity(file_address)
-            tree = p.Parse(file_address)
-        except Exception as e:
-            print("An Error occurred in file:" + file_address + "\n" + str(e))
-            continue
+    file_address = 'C:/Users/babak/Desktop/source/OpenUnderstand-master/openunderstand/benchmark/calculator_app/src/com/calculator/app/display/print_fail.java'
+
+    # for file_address in files:
+    try:
+        file_ent = p.getFileEntity(file_address)
+        tree = p.Parse(file_address)
+    except Exception as e:
+        print("An Error occurred in file:" + file_address + "\n" + str(e))
+        # continue
         # try:
         #     # implement
         #     listener = ImplementCoupleAndImplementByCoupleBy()
@@ -239,10 +241,11 @@ if __name__ == '__main__':
         #     p.addDeclareRefs(listener.declare, file_ent)
         # except Exception as e:
         #     print("An Error occurred for reference declare in file:" + file_address + "\n" + str(e))
-        try:
-            listener = UsedAndUsedByListener()
-            listener.create = []
-            p.Walk(listener, tree)
-            p.addCreateRefs(listener.create, file_ent, file_address)
-        except Exception as e:
-            print("An Error occurred for reference create in file:" + file_address + "\n" + str(e))
+    try:
+        path = 'C:/Users/babak/Desktop/source/OpenUnderstand-master/openunderstand/benchmark/calculator_app/src/com/calculator/app/display/print_fail.java'
+        listener = UsedAndUsedByListener(path,'print_fail.java')
+        listener.create = []
+        p.Walk(listener, tree)
+        p.addCreateRefs(listener.create, file_ent, file_address)
+    except Exception as e:
+        print("An Error occurred for reference create in file:" + file_address + "\n" + str(e))

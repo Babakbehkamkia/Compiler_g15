@@ -30,7 +30,7 @@ class UsedAndUsedByListener(JavaParserLabeledListener):
         self.parents = []
         self.line = []
         self.col = []
-        self.file = create_Entity(name=name, longname=longname, kind="Java File", value=None, parent=None, entity_type=None, contents=None)
+        self.file = create_Entity(id=None,name=name, longname=longname, kind="Java File", value=None, parent=None, type=None, contents=None)
 
     def enterMethodDeclaration(self, ctx:JavaParserLabeled.MethodDeclarationContext):
         if ctx.parentCtx == '':
@@ -43,10 +43,10 @@ class UsedAndUsedByListener(JavaParserLabeledListener):
     def enterPrimary4(self, ctx: JavaParserLabeled.Primary4Context):
         if self.method_Name != None:
             self.used.append(ctx.getText())
-            self.usedby.append(self.method_Name)
+            self.usedBy.append(self.method_Name)
             self.line.append(ctx.IDENTIFIER().symbol.line)
             self.col.append(ctx.IDENTIFIER().symbol.column)
-            ent = create_Entity(self.method_Name, self.longname + '.' + self.method_Name, self.longname, 'Java Method', None, None, None)
-            scope = create_Entity(str(ctx.IDENTIFIER()), self.longname + '.' + self.method_Name + '.' + str(ctx.IDENTIFIER()), self.method_Name, 'Java Variable', None, None, None)
+            ent = create_Entity(self.method_Name, self.longname + '.' + self.method_Name, self.longname, 'Java Method', None, None, None, None)
+            scope = create_Entity(str(ctx.IDENTIFIER()), self.longname + '.' + self.method_Name + '.' + str(ctx.IDENTIFIER()), self.method_Name, 'Java Variable', None, None, None, None)
             ref1 = create_Ref('Use', self.file, ctx.IDENTIFIER().symbol.line, ctx.IDENTIFIER().symbol.column)
             ref1 = create_Ref('UsedBy', self.file, ctx.IDENTIFIER().symbol.line, ctx.IDENTIFIER().symbol.column)
