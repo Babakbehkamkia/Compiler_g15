@@ -6,6 +6,7 @@ import argparse
 
 
 def main(args):
+
     stream = FileStream(args.file, encoding="utf8")
     lexer = JavaLexer(stream)
     token_stream = CommonTokenStream(lexer)
@@ -17,23 +18,22 @@ def main(args):
     walker = ParseTreeWalker()
     walker.walk(t=parse_tree, listener=my_listener)
 
-    print("compiler result: ")
 
-    d = my_listener.get_use
-    print("[\n\t{")
-    for k in d.keys():
-        print(f"\t\t{k}", end=" : ")
-        print(d[k])
-    print("\t}")
-    print("]")
+    d_use = my_listener.get_use
+    # print("[\n\t{")
+    # for k in d_use.keys():
+    #     print(f"\t\t{k}", end=" : ")
+    #     print(d_use[k])
+    # print("\t}")
+    # print("]")
 
-    d = my_listener.get_type
-    print("[\n\t{")
-    for k in d.keys():
-        print(f"\t\t{k}", end=" : ")
-        print(d[k])
-    print("\t}")
-    print("]")
+    d_type = my_listener.get_type
+    # print("[\n\t{")
+    # for k in d_type.keys():
+    #     print(f"\t\t{k}", end=" : ")
+    #     print(d_type[k])
+    # print("\t}")
+    # print("]")
 
 
 if __name__ == "__main__":

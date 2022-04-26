@@ -1,8 +1,8 @@
 class c1 {
     public int c1_p1;
     public double c1_p2;
-    public int c1_p3;
-    public int c1_p4;
+    public int c1_p3 = 0;
+    public int c1_p4 = c1_p3;
     public void c1_f1 () {
         int localVar = c1_p4;
 	    system.out.println("this is f1 of c1");
