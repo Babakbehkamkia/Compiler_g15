@@ -59,57 +59,7 @@ class Project():
         file.close()
         print("processing file:", file_ent)
         return file_ent
-    #
-    # def addDeclareRefs(self, ref_dicts, file_ent):
-    #     for ref_dict in ref_dicts:
-    #         if ref_dict["scope"] is None:  # the scope is the file
-    #             scope = file_ent
-    #         else:  # a normal package
-    #             scope = self.getPackageEntity(file_ent, ref_dict["scope"], ref_dict["scope_longname"])
-    #
-    #         if ref_dict["ent"] is None:  # the ent package is unnamed
-    #             ent = self.getUnnamedPackageEntity(file_ent)
-    #         else:  # a normal package
-    #             ent = self.getPackageEntity(file_ent, ref_dict["ent"], ref_dict["ent_longname"])
-    #
-    #         # Declare: kind id 192
-    #         declare_ref = ReferenceModel.get_or_create(_kind=192, _file=file_ent, _line=ref_dict["line"],
-    #                                                    _column=ref_dict["col"], _ent=ent, _scope=scope)
-    #
-    #         # Declarein: kind id 193
-    #         declarein_ref = ReferenceModel.get_or_create(_kind=193, _file=file_ent, _line=ref_dict["line"],
-    #                                                      _column=ref_dict["col"], _scope=ent, _ent=scope)
-    #
-    # def addImplementOrImplementByRefs(self, ref_dicts, file_ent, file_address):
-    #     for ref_dict in ref_dicts:
-    #         scope = EntityModel.get_or_create(_kind=self.findKindWithKeywords(ref_dict["scope_kind"],
-    #                                                                           ref_dict["scope_modifiers"]),
-    #                                           _name=ref_dict["scope_name"],
-    #                                           _parent=ref_dict["scope_parent"] if ref_dict[
-    #                                                                                   "scope_parent"] is not None else file_ent,
-    #                                           _longname=ref_dict["scope_longname"],
-    #                                           _contents=ref_dict["scope_contents"])[0]
-    #         ent = self.getImplementEntity(ref_dict["type_ent_longname"], file_address)
-    #
-    #         implement_ref = ReferenceModel.get_or_create(_kind=188, _file=file_ent, _line=ref_dict["line"],
-    #                                                      _column=ref_dict["col"], _ent=ent, _scope=scope)
-    #         implementBy_ref = ReferenceModel.get_or_create(_kind=189, _file=file_ent, _line=ref_dict["line"],
-    #                                                        _column=ref_dict["col"], _ent=scope, _scope=ent)
-    #
-    # def addCreateRefs(self, ref_dicts, file_ent, file_address):
-    #     for ref_dict in ref_dicts:
-    #         scope = EntityModel.get_or_create(_kind=self.findKindWithKeywords("Method", ref_dict["scopemodifiers"]),
-    #                                           _name=ref_dict["scopename"],
-    #                                           _type=ref_dict["scopereturntype"]
-    #                                           , _parent=ref_dict["scope_parent"] if ref_dict[
-    #                                                                                     "scope_parent"] is not None else file_ent
-    #                                           , _longname=ref_dict["scopelongname"]
-    #                                           , _contents=["scopecontent"])[0]
-    #         ent = self.getCreatedClassEntity(ref_dict["refent"], ref_dict["potential_refent"], file_address)
-    #         Create = ReferenceModel.get_or_create(_kind=190, _file=file_ent, _line=ref_dict["line"],
-    #                                               _column=ref_dict["col"], _scope=scope, _ent=ent)
-    #         Createby = ReferenceModel.get_or_create(_kind=191, _file=file_ent, _line=ref_dict["line"],
-    #                                                 _column=ref_dict["col"], _scope=ent, _ent=scope)
+
 
     def getPackageEntity(self, file_ent, name, longname):
         # package kind id: 72
@@ -208,69 +158,48 @@ if __name__ == '__main__':
     ########## AGE KHASTID YEK FILE RO RUN KONID:
     # files = ["D:/term 6/compiler/proje/Compiler_g15/openunderstand/benchmark/calculator_app/src/com/calculator/app/method/fibonacci.java"]
 
-    # file_address = 'C:/Users/babak/Desktop/source/OpenUnderstand-master/openunderstand/benchmark/calculator_app/src/com/calculator/app/display/print_fail.java'
-
     for file_address in files:
         try:
             file_ent = p.getFileEntity(file_address)
             tree = p.Parse(file_address)
         except Exception as e:
             print("An Error occurred in file:" + file_address + "\n" + str(e))
-        # continue
-        # try:
-        #     # implement
-        #     listener = ImplementCoupleAndImplementByCoupleBy()
-        #     listener.implement = []
-        #     p.Walk(listener, tree)
-        #     p.addImplementOrImplementByRefs(listener.implement, file_ent, file_address)
-        # except Exception as e:
-        #     print("An Error occurred for reference implement in file:" + file_address + "\n" + str(e))
-        # try:
-        #     # create
-        #     listener = CreateAndCreateBy()
-        #     listener.create = []
-        #     p.Walk(listener, tree)
-        #     p.addCreateRefs(listener.create, file_ent, file_address)
-        # except Exception as e:
-        #     print("An Error occurred for reference create in file:" + file_address + "\n" + str(e))
-        # try:
-        #     # declare
-        #     listener = DeclareAndDeclareinListener()
-        #     listener.declare = []
-        #     p.Walk(listener, tree)
-        #     p.addDeclareRefs(listener.declare, file_ent)
-        # except Exception as e:
-        #     print("An Error occurred for reference declare in file:" + file_address + "\n" + str(e))
-        try:
-            stream = FileStream(file_address, encoding="utf8")
-            lexer = JavaLexer(stream)
-            token_stream = CommonTokenStream(lexer)
-            parser = JavaParserLabeled(token_stream)
-            parse_tree = parser.compilationUnit()
-            my_listener = DSCmetric(file_address)
-            walker = ParseTreeWalker()
-            walker.walk(t=parse_tree, listener=my_listener)
-            # ==========typed/typedby=============
-            d_type = my_listener.get_type
-            ent = EntityModel.get_or_create(_kind=None, _parent=None, _name=None, _longname=None, _value=None,
-                                            _type=None, _contexts=None)
-            scope = EntityModel.get_or_create(_kind=None, _parent=None, _name=None, _longname=None, _value=None,
-                                            _type=None, _contexts=None)
-            ref1 = ReferenceModel.get_or_create(_kind=None, _file=None, _line=None, _column=None, _ent=ent, _scope=scope)
-            ref2 = ReferenceModel.get_or_create(_kind=None, _file=None, _line=None, _column=None, _ent=scope, _scope=ent)
-            print(d_type)
 
-            # ==========used/usedby=============
-            d_use = my_listener.get_use
-            ent = EntityModel.get_or_create(_kind=None, _parent=None, _name=None, _longname=None, _value=None,
-                                            _type=None, _contexts=None)
-            scope = EntityModel.get_or_create(_kind=None, _parent=None, _name=None, _longname=None, _value=None,
-                                              _type=None, _contexts=None)
-            ref1 = ReferenceModel.get_or_create(_kind=None, _file=None, _line=None, _column=None, _ent=ent,
+        stream = FileStream(file_address, encoding="utf8")
+        lexer = JavaLexer(stream)
+        token_stream = CommonTokenStream(lexer)
+        parser = JavaParserLabeled(token_stream)
+        parse_tree = parser.compilationUnit()
+        my_listener = DSCmetric(file_address)
+        walker = ParseTreeWalker()
+        walker.walk(t=parse_tree, listener=my_listener)
+        # ==========typed/typedby=============
+        d_type = my_listener.get_type
+        for type_tuple in d_type['typedBy']:
+            ent, h_c1 = EntityModel.get_or_create(_kind=224, _parent=None, _name=type_tuple[1], _longname=file_address, _value=None,
+                                            _type=None, _contents=stream)
+            scope, h_c2 = EntityModel.get_or_create(_kind=225, _parent=None, _name=type_tuple[0], _longname=file_address, _value=None,
+                                            _type=None, _contents=stream)
+            ref1 = ReferenceModel.get_or_create(_kind=224, _file=scope, _line=type_tuple[4], _column=type_tuple[5], _ent=ent, _scope=scope)
+            ref2 = ReferenceModel.get_or_create(_kind=225, _file=ent, _line=type_tuple[2], _column=type_tuple[3], _ent=scope, _scope=ent)
+        # print(d_type)
+
+        # ==========used/usedby=============
+        d_use = my_listener.get_use
+        for use_tuple in d_use['useBy']:
+            ent, h_c1 = EntityModel.get_or_create(_kind=226, _parent=None, _name=use_tuple[1], _longname=file_address, _value=None,
+                                            _type=None, _contents=stream)
+            scope, h_c2 = EntityModel.get_or_create(_kind=227, _parent=None, _name=use_tuple[0], _longname=file_address, _value=None,
+                                              _type=None, _contents=stream)
+            ref1 = ReferenceModel.get_or_create(_kind=226, _file=scope, _line=use_tuple[4], _column=use_tuple[5], _ent=ent,
                                                 _scope=scope)
-            ref2 = ReferenceModel.get_or_create(_kind=None, _file=None, _line=None, _column=None, _ent=scope,
+            ref2 = ReferenceModel.get_or_create(_kind=227, _file=ent, _line=use_tuple[2], _column=use_tuple[3], _ent=scope,
                                                 _scope=ent)
-            print(d_use)
+            # print(d_use)
 
-        except Exception as e:
-            print("An Error occurred for reference create in file:" + file_address + "\n" + str(e))
+
+#     kind id
+# 224		Java Typed
+# 225    	Java Typedby
+# 226		Java Use
+# 227	 	Java Useby
